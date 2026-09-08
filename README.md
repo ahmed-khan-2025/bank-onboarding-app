@@ -30,6 +30,11 @@ Run tests:
 ```bash
 python -m pytest -q
 ```
+
+### Why configuration-driven flows?
+
+Country-specific behaviour is data, not controller branching. Adding a new country or customer type should mostly require a new flow definition and any genuinely new integration adapter. This avoids a large nested `if/elif` tree.
+
 ### Data model
 
 - `applications`: selected flow, lifecycle status, final decision and timestamps.
@@ -38,10 +43,6 @@ python -m pytest -q
 - `audit_events`: non-sensitive operational events and outcomes.
 
 Customer answers are not copied into audit events. The audit trail contains event type, integration, result/code and request/event identifiers rather than raw identifiers or financial answers.
-
-### Why configuration-driven flows?
-
-Country-specific behaviour is data, not controller branching. Adding a new country or customer type should mostly require a new flow definition and any genuinely new integration adapter. This avoids a large nested `if/elif` tree.
 
 ## Tests
 
