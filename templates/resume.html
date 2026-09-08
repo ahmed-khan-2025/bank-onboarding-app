@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero">
+  <div class="eyebrow">Resume onboarding</div>
+  <h1>Continue your application</h1>
+  <p>Your progress is saved. This demo resume link expires in {{ expires_hours }} hours.</p>
+</section>
+<div class="card">
+  <p><strong>Application:</strong> {{ application.application_ref }}</p>
+  <p><strong>Journey:</strong> {{ country_names[application.country] }} · {{ type_names[application.customer_type] }}</p>
+  <a class="button" href="{{ url_for('resume_token', token=token) }}">Continue application →</a>
+</div>
+{% endblock %}

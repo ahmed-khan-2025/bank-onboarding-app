@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero center">
+  <div class="eyebrow">Application complete</div>
+  <h1>Application submitted</h1>
+  <p>Reference: <strong>{{ application.application_ref }}</strong></p>
+</section>
+
+<div class="decision {{ application.decision }}">
+  <span>Final outcome</span>
+  <h2>{{ application.decision|replace('_',' ')|title }}</h2>
+  <p>{{ application.decision_reason or 'The final decision has been persisted.' }}</p>
+</div>
+
+<section class="card center">
+  <p>This demo stores the application, journey, integration outcomes and audit events in SQLite.</p>
+  <div class="actions center-actions">
+    <a class="button" href="{{ url_for('index') }}">Start another application</a>
+  </div>
+</section>
+{% endblock %}

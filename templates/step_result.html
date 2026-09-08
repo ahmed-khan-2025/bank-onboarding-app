@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="result-card {{ result.status }}">
+  <div class="status-icon">{% if result.status == 'fail' %}×{% else %}i{% endif %}</div>
+  <div>
+    <div class="eyebrow">Integration result</div>
+    <h1>{{ result.status|replace('_',' ')|title }}</h1>
+    <h3>{{ result.code|replace('_',' ')|title }}</h3>
+    <p>{{ result.data.decision_reason|default('This deterministic mock returned a non-pass outcome. The application has been routed to its final decision.') }}</p>
+    <p class="request">Request ID: <code>{{ result.request_id }}</code></p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>What happens next?</h2>
+  {% if result.status == 'fail' %}
+    <p>The mandatory check failed, so this demo application has been <strong>rejected</strong>.</p>
+  {% else %}
+    <p>The check requires a human decision, so this demo application has been routed to <strong>manual review</strong>.</p>
+  {% endif %}
+  <div class="actions">
+    <a class="button" href="{{ url_for('complete', app_id=application.id) }}">View final outcome</a>
+    <a class="button secondary" href="{{ url_for('index') }}">Start another application</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="journey-head">
+  <div>
+    <div class="eyebrow">{{ country_names[application.country] }} · {{ type_names[application.customer_type] }}</div>
+    <h1>{{ flow.title }}</h1>
+  </div>
+  <div class="app-ref">{{ application.application_ref }}</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label">Step {{ step_index + 2 }} of {{ flow.steps|length + 1 }} · {{ ((step_index + 1) / flow.steps|length * 100)|round(0) }}% journey progress</div>
+  <div class="progress-track"><div class="progress-bar" style="width: {{ ((step_index + 1) / (flow.steps|length) * 100)|round(0) }}%"></div></div>
+</div>
+
+<section class="hero compact">
+  <h2>{{ step.title }}</h2>
+  <p>{{ step.description }}</p>
+</section>
+
+{% if errors %}
+<div class="alert error">
+  <strong>Please fix the following:</strong>
+  <ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+<form class="card form" method="post">
+  {% for field in step.fields %}
+    <div class="field">
+      {% if field.type == 'checkbox' %}
+        <label class="checkbox-label">
+          <input type="checkbox" name="{{ field.name }}" {% if values.get(field.name) in [True, 'on'] %}checked{% endif %}>
+          <span>{{ field.label }}</span>
+        </label>
+      {% elif field.type == 'select' %}
+        <label for="{{ field.name }}">{{ field.label }}</label>
+        <select id="{{ field.name }}" name="{{ field.name }}" {% if field.required %}required{% endif %}>
+          <option value="">Select...</option>
+          {% for option in field.options %}
+            <option value="{{ option }}" {% if values.get(field.name) == option %}selected{% endif %}>{{ option|replace('_',' ')|title }}</option>
+          {% endfor %}
+        </select>
+      {% else %}
+        <label for="{{ field.name }}">{{ field.label }}</label>
+        <input id="{{ field.name }}" type="{{ field.type }}" name="{{ field.name }}"
+               value="{{ values.get(field.name, '') }}"
+               {% if field.required %}required{% endif %}
+               {% if field.type == 'number' %}min="0" step="any"{% endif %}
+               placeholder="{{ field.placeholder|default('') }}">
+      {% endif %}
+    </div>
+  {% endfor %}
+
+  <div class="actions">
+    {% if step_index > 0 %}
+      <a class="button secondary" href="{{ url_for('step', app_id=application.id, step_index=step_index-1) }}">← Back</a>
+    {% else %}
+      <a class="button secondary" href="{{ url_for('index') }}">← Change journey</a>
+    {% endif %}
+    <button type="submit">{% if step_index + 1 == flow.steps|length %}Review application{% else %}Continue →{% endif %}</button>
+  </div>
+</form>
+
+<p class="muted">Server-side validation is applied before any mock integration is called.</p>
+{% endblock %}

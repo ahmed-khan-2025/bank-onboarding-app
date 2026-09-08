@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="journey-head">
+  <div>
+    <div class="eyebrow">Final review</div>
+    <h1>Review application</h1>
+    <p>{{ country_names[application.country] }} · {{ type_names[application.customer_type] }}</p>
+  </div>
+  <div class="app-ref">{{ application.application_ref }}</div>
+</div>
+
+<div class="decision {{ decision }}">
+  <span>Decision</span>
+  <h2>{{ decision|replace('_',' ')|title }}</h2>
+  <p>{{ reason }}</p>
+</div>
+
+<section class="card">
+  <h2>Integration checks</h2>
+  {% if results %}
+  <div class="table-wrap"><table>
+    <thead><tr><th>Integration</th><th>Status</th><th>Result</th><th>Request ID</th></tr></thead>
+    <tbody>
+    {% for row in results %}
+      {% set result = row.result_json|fromjson %}
+      <tr>
+        <td>{{ row.integration|replace('_',' ')|title }}</td>
+        <td><span class="status {{ result.status }}">{{ result.status|replace('_',' ')|title }}</span></td>
+        <td>{{ result.code|replace('_',' ')|title }}</td>
+        <td><code>{{ result.request_id[:12] }}…</code></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}<p>No integrations were required for this application.</p>{% endif %}
+</section>
+
+<section class="card">
+  <h2>Collected steps</h2>
+  <div class="step-list">
+  {% for row in steps %}
+    {% set answers = row.answers_json|fromjson %}
+    <div class="step-row">
+      <strong>Step {{ row.step_index + 1 }}</strong>
+      <span>{{ flow.steps[row.step_index].title }}</span>
+      <a href="{{ url_for('step', app_id=application.id, step_index=row.step_index) }}">Edit</a>
+    </div>
+  {% endfor %}
+  </div>
+</section>
+
+<section class="card">
+  <h2>Audit trail</h2>
+  {% for event in audit %}
+    {% set details = event.details|fromjson %}
+    <div class="audit"><div><strong>{{ event.event_type|replace('_',' ')|title }}</strong><small>{{ details }}</small></div><time>{{ event.created_at }}</time></div>
+  {% endfor %}
+</section>
+
+<p><a class="button secondary" href="{{ url_for('resume_link', app_id=application.id) }}">Create secure resume link</a></p>
+
+<form method="post" action="{{ url_for('submit', app_id=application.id) }}">
+  <button type="submit">Submit application</button>
+</form>
+{% endblock %}

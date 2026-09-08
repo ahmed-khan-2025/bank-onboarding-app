@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero">
+  <div class="eyebrow">Customer onboarding</div>
+  <h1>Start an application</h1>
+  <p>Choose a country and customer type. The journey is configured separately for each flow.</p>
+</section>
+
+<form class="card form" method="post" action="{{ url_for('start') }}">
+  <label>Country
+    <select name="country" required>
+      <option value="">Select country</option>
+      <option value="SE">Sweden</option>
+      <option value="ES">Spain</option>
+      <option value="PL">Poland</option>
+    </select>
+  </label>
+  <label>Customer type
+    <select name="customer_type" required>
+      <option value="">Select type</option>
+      <option value="private">Private</option>
+      <option value="business">Business</option>
+    </select>
+  </label>
+  <button type="submit">Start onboarding →</button>
+</form>
+
+<div class="grid two">
+  <section class="card">
+    <h2>Six configured journeys</h2>
+    <ul class="clean-list">
+      <li>Sweden · Private / Business</li>
+      <li>Spain · Private / Business</li>
+      <li>Poland · Private / Business</li>
+    </ul>
+  </section>
+  <section class="card demo-card">
+    <h2>Demo scenarios</h2>
+    <p><code>manual</code> values create manual review.</p>
+    <p><code>fail</code>, <code>expired</code>, <code>bad</code> or invalid business data create a rejection.</p>
+    <p>Normal demo values pass.</p>
+  </section>
+</div>
+<div class="card note">
+    <strong>Demo only:</strong> Use fictional personal/company data. No real banking or identity service is called.
+</div>
+{% endblock %}
